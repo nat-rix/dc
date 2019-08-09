@@ -37,16 +37,13 @@ TEXT = """                                                      ./--::/`{a}
                                                     .-:``:`/                          
                                                      `./.-::/                         
                                                        ......`{a}  """
+
 TEXT = tuple(TEXT.format(a=('*' if t else ' ')).split('\n') for t in range(2))
+
 from shutil import get_terminal_size
 from time import sleep
 from os import popen
 from signal import signal, SIGINT
-
-signal(SIGINT, lambda a, b: None)
-
-h, w = (int(i) for i in popen('stty size', 'r').read().split())
-print(w, h)
 
 def out(*xargs):
     print(*xargs, sep='', end='')
@@ -73,9 +70,12 @@ def draw(t, x=0):
             out(line[-x:])
         print()
 
-x = w
-clear()
-while x > -len(TEXT[0][0]):
-    draw(TEXT[(x % 40) < 16], x)
-    x -= 1
-    sleep(0.05)
+if __name__ == '__main__':
+    signal(SIGINT, lambda a, b: None)
+    h, w = (int(i) for i in popen('stty size', 'r').read().split())
+    x = w
+    clear()
+    while x > -len(TEXT[0][0]):
+        draw(TEXT[(x % 40) < 16], x)
+        x -= 1
+        sleep(0.05)
